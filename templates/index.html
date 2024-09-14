@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Python/SQL IDE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+        }
+        .output {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+        .button-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Simple Python/SQL IDE</h1>
+
+<h3>Python Editor</h3>
+<textarea id="pythonCode" placeholder="Write Python code here..."></textarea>
+<div class="button-container">
+    <button onclick="runPython()">Run Python Code</button>
+</div>
+
+<h3>SQL Editor</h3>
+<textarea id="sqlQuery" placeholder="Write SQL query here..."></textarea>
+<div class="button-container">
+    <button onclick="runSQL()">Run SQL Query</button>
+</div>
+
+<h3>Output:</h3>
+<div class="output" id="output"></div>
+
+<script>
+    // Function to run Python code
+    function runPython() {
+        const code = document.getElementById('pythonCode').value;
+        fetch('/run_python', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code: code }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('output').innerText = data.output;
+        })
+        .catch(error => {
+            document.getElementById('output').innerText = 'Error: ' + error;
+        });
+    }
+
+    // Function to run SQL query
+    function runSQL() {
+        const query = document.getElementById('sqlQuery').value;
+        fetch('/run_sql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query: query }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('output').innerText = JSON.stringify(data.output, null, 2);
+        })
+        .catch(error => {
+            document.getElementById('output').innerText = 'Error: ' + error;
+        });
+    }
+</script>
+
+</body>
+</html>
